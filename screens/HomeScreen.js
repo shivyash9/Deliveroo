@@ -1,13 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, SafeAreaView, Image } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { UserIcon, ChevronDownIcon, AdjustmentsVerticalIcon, MagnifyingGlassIcon } from 'react-native-heroicons/solid'
 import Categories from '../components/Categories';
 import FeaturedRow from '../components/FeaturedRow';
+import { client, urlFor } from '../client';
 
 export const HomeScreen = () => {
   const navigation = useNavigation();
+  const [featuredCategories, setFeaturedCategories] = useState([]);
+  // QUERY TO FETCH DETAILS OF FEATURED CATEGORIES
+  const QUERY = `*[_type=="Category"]{image}`;
+
+
 
   //as soon as screen mounts do something
   useLayoutEffect(() => {
@@ -17,6 +23,17 @@ export const HomeScreen = () => {
       }
     )
   }, []);
+
+
+  useEffect(() => {
+    client.fetch(QUERY).then((data) => {
+      // setFeaturedCategories(data);
+      // console.log("DATA: ", data[0].image);
+      // console.log("IMAGE: ", urlFor(data[0].image).url());
+    })
+  }, []);
+
+  // console.log("FC: ", featuredCategories);
 
   return (
     <SafeAreaView className=" bg-white  pt-11 pb-2">
@@ -79,6 +96,7 @@ export const HomeScreen = () => {
         <Categories />
 
         {/* Featured rows  */}
+
         <FeaturedRow
           title="Offers Near You"
           description="Why not support your local restaurant tonight!"
